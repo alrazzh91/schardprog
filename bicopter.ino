@@ -20,11 +20,6 @@ float mpuTimer, mpuDTime;
 //--calibration
 float AccRawXc, AccRawYc, AccRawZc, GyRawXc, GyRawYc, GyRawZc;
  
-/////time
-// float tim3;
-// float elapsedTime;
-// unsigned long kalTime;
- 
 /////kalman
 float kalmanR;
 float kalmanP;
@@ -116,12 +111,7 @@ void loop() {
   left_prop.writeMicroseconds(pwmLeft);
   right_prop.writeMicroseconds(pwmRight);
   previous_error = error;
- 
-  // Serial.print(" \tPitch : ");
-  // Serial.print(pitch);
-  // Serial.print(" \tkalmanP");
-  // Serial.print(kalmanP);
-  // Serial.println(" ");
+
   Serial.print(" \terror : ");
   Serial.print(error);
   Serial.print(" \tkalmanP : ");
@@ -175,7 +165,6 @@ void read_mpu6050_accel() {
   AccRawX1 = Wire.read() << 8 | Wire.read();  //high and low accel data x
   AccRawY1 = Wire.read() << 8 | Wire.read();  //high and low accel data y
   AccRawZ1 = Wire.read() << 8 | Wire.read();  //high and low accel data z
-  //  temp = Wire.read() << 8 | Wire.read();
 }
  
 void read_mpu6050_gyro() {
@@ -217,9 +206,6 @@ void calibrate_mpu6050() {
 void calculate_angle() {
   read_mpu6050_accel();
  
-  // AccRawX2 = (AccRawX1 + (-1 * AccRawXc)) / 8192.0;
-  // AccRawY2 = (AccRawY1 + (-1 * AccRawYc)) / 8192.0;
-  // AccRawZ2 = (AccRawZ1 + (8192 - AccRawZc)) / 8192.0;
   AccRawX2 = (AccRawX1 + (-1 * AccRawXc)) / 16384.0;
   AccRawY2 = (AccRawY1 + (-1 * AccRawYc)) / 16384.0;
   AccRawZ2 = (AccRawZ1 + (8192 - AccRawZc)) / 16384.0;
@@ -232,11 +218,8 @@ void calculate_angle() {
     mpuDTime = (millis() - mpuTimer) / 1000;
     read_mpu6050_gyro();
  
-    // GyRawX2 = GyRawX1 / 65.5;
-    // GyRawY2 = GyRawY1 / 65.5;
     GyRawX2 = GyRawX1 / 131.0;
     GyRawY2 = GyRawY1 / 131.0;
-    //    GyRawZ2 = (GyRawZ1 + (-1 * GyRawXc)) / 65.5;
  
     GyAngleX += GyRawX2 * mpuDTime;
     GyAngleY += GyRawY2 * mpuDTime;
